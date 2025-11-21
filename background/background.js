@@ -12,7 +12,7 @@ chrome.runtime.onInstalled.addListener((details) => {
         chrome.storage.local.set({
             optimizerOptions: {
                 optimizationGoal: 'profit',
-                iterations: 100,
+                iterations: 10,
                 delay: 1000,
                 autoSave: true
             }

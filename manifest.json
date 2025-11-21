@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Trading View Strategy Optimizer By Hakan Sarıaslan",
-  "version": "0.1",
+  "version": "0.1.1",
   "description": "Automatically test and optimize TradingView strategy parameters to find the best profit and win rate",
   "permissions": [
     "activeTab",

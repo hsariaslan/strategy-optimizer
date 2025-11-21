@@ -49,101 +49,8 @@ function initializeButtons() {
 
 // Handle optimization start
 async function handleOptimize() {
-    const optimizeBtn = document.getElementById('optimizeBtn');
-    const progressSection = document.getElementById('progressSection');
-    const statusDot = document.querySelector('.status-dot');
-    const statusText = document.querySelector('.status-text');
-
-    try {
-        // Disable button
-        optimizeBtn.disabled = true;
-        optimizeBtn.innerHTML = `
-            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
-            </svg>
-            <span>Running...</span>
-        `;
-
-        // Update status
-        statusDot.classList.add('running');
-        statusText.textContent = 'Optimization running...';
-
-        // Show progress
-        progressSection.classList.remove('hidden');
-
-        // Check if we're on TradingView
-        const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-        
-        if (!tab.url.includes('tradingview.com')) {
-            throw new Error('Please navigate to TradingView first');
-        }
-
-        // Send message to content script
-        await chrome.tabs.sendMessage(tab.id, { 
-            action: 'startOptimization',
-            options: await getOptions()
-        });
-
-        // Simulate progress (this will be replaced with actual progress from content script)
-        simulateProgress();
-
-    } catch (error) {
-        console.error('Optimization error:', error);
-        showError(error.message);
-        resetOptimizeButton();
-    }
-}
-
-// Simulate progress (temporary - will be replaced with real progress)
-function simulateProgress() {
-    const progressFill = document.getElementById('progressFill');
-    const progressText = document.getElementById('progressText');
-    let progress = 0;
-
-    const interval = setInterval(() => {
-        progress += 1;
-        progressFill.style.width = `${progress}%`;
-        progressText.textContent = `${progress}% Complete`;
-
-        if (progress >= 100) {
-            clearInterval(interval);
-            setTimeout(() => {
-                completeOptimization();
-            }, 500);
-        }
-    }, 50);
-}
-
-// Complete optimization
-function completeOptimization() {
-    const statusDot = document.querySelector('.status-dot');
-    const statusText = document.querySelector('.status-text');
-
-    statusDot.classList.remove('running');
-    statusText.textContent = 'Optimization complete!';
-
-    resetOptimizeButton();
-
-    // Show success message
-    showNotification('Optimization completed successfully!', 'success');
-
-    // Switch to results tab
-    setTimeout(() => {
-        const resultsBtn = document.querySelector('[data-tab="results"]');
-        resultsBtn.click();
-    }, 1000);
-}
-
-// Reset optimize button
-function resetOptimizeButton() {
-    const optimizeBtn = document.getElementById('optimizeBtn');
-    optimizeBtn.disabled = false;
-    optimizeBtn.innerHTML = `
-        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
-        </svg>
-        <span>Optimize Strategy</span>
-    `;
+    // TODO: Will implement modal and TradingView integration later
+    console.log('Optimize button clicked - functionality to be implemented');
 }
 
 // Handle export
@@ -178,7 +85,7 @@ async function loadSavedOptions() {
         if (result.optimizerOptions) {
             const options = result.optimizerOptions;
             document.getElementById('optimizationGoal').value = options.optimizationGoal || 'profit';
-            document.getElementById('iterations').value = options.iterations || 100;
+            document.getElementById('iterations').value = options.iterations || 10;
             document.getElementById('delay').value = options.delay || 1000;
             document.getElementById('autoSave').checked = options.autoSave !== false;
         }
@@ -192,7 +99,7 @@ async function getOptions() {
     const result = await chrome.storage.local.get('optimizerOptions');
     return result.optimizerOptions || {
         optimizationGoal: 'profit',
-        iterations: 100,
+        iterations: 10,
         delay: 1000,
         autoSave: true
     };
@@ -265,23 +172,3 @@ style.textContent = `
     }
 `;
 document.head.appendChild(style);
-
-// Listen for messages from content script
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    if (message.action === 'updateProgress') {
-        const progressFill = document.getElementById('progressFill');
-        const progressText = document.getElementById('progressText');
-        
-        progressFill.style.width = `${message.progress}%`;
-        progressText.textContent = `${message.progress}% Complete`;
-    }
-    
-    if (message.action === 'optimizationComplete') {
-        completeOptimization();
-    }
-    
-    if (message.action === 'optimizationError') {
-        showError(message.error);
-        resetOptimizeButton();
-    }
-});
