@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TradingView Strategy Optimizer</title>
+    <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+                </svg>
+                <h1 class="title">Strategy Optimizer</h1>
+            </div>
+            <div class="version">v0.1</div>
+        </header>
+
+        <!-- Tab Navigation -->
+        <nav class="tab-nav">
+            <button class="tab-btn active" data-tab="test">
+                <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/>
+                    <polyline points="12 6 12 12 16 14"/>
+                </svg>
+                <span>Test</span>
+            </button>
+            <button class="tab-btn" data-tab="results">
+                <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="12" y1="20" x2="12" y2="10"/>
+                    <line x1="18" y1="20" x2="18" y2="4"/>
+                    <line x1="6" y1="20" x2="6" y2="16"/>
+                </svg>
+                <span>Results</span>
+            </button>
+            <button class="tab-btn" data-tab="options">
+                <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="3"/>
+                    <path d="M12 1v6m0 6v6m9-9h-6m-6 0H3"/>
+                </svg>
+                <span>Options</span>
+            </button>
+        </nav>
+
+        <!-- Tab Content -->
+        <div class="tab-content">
+            <!-- Test Tab -->
+            <div class="tab-pane active" id="test-tab">
+                <div class="tab-inner">
+                    <div class="info-card">
+                        <p class="info-text">Start optimizing your TradingView strategy to find the best parameters for maximum profit and win rate.</p>
+                    </div>
+                    
+                    <div class="status-section">
+                        <div class="status-indicator">
+                            <div class="status-dot"></div>
+                            <span class="status-text">Ready to optimize</span>
+                        </div>
+                    </div>
+
+                    <button class="optimize-btn" id="optimizeBtn">
+                        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+                        </svg>
+                        <span>Optimize Strategy</span>
+                    </button>
+
+                    <div class="progress-section hidden" id="progressSection">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressFill"></div>
+                        </div>
+                        <p class="progress-text" id="progressText">0% Complete</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results Tab -->
+            <div class="tab-pane" id="results-tab">
+                <div class="tab-inner">
+                    <div class="results-header">
+                        <h2 class="section-title">Optimization Results</h2>
+                        <button class="export-btn" id="exportBtn">
+                            <svg class="btn-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                <polyline points="7 10 12 15 17 10"/>
+                                <line x1="12" y1="15" x2="12" y2="3"/>
+                            </svg>
+                            Export
+                        </button>
+                    </div>
+                    
+                    <div class="results-container" id="resultsContainer">
+                        <div class="empty-state">
+                            <svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="12" y1="20" x2="12" y2="10"/>
+                                <line x1="18" y1="20" x2="18" y2="4"/>
+                                <line x1="6" y1="20" x2="6" y2="16"/>
+                            </svg>
+                            <p class="empty-text">No results yet</p>
+                            <p class="empty-subtext">Run an optimization to see results here</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Options Tab -->
+            <div class="tab-pane" id="options-tab">
+                <div class="tab-inner">
+                    <h2 class="section-title">Optimization Settings</h2>
+                    
+                    <div class="option-group">
+                        <label class="option-label">
+                            <span class="label-text">Optimization Goal</span>
+                            <select class="option-select" id="optimizationGoal">
+                                <option value="profit">Maximum Profit</option>
+                                <option value="winrate">Best Win Rate</option>
+                                <option value="both">Balanced (Profit + Win Rate)</option>
+                            </select>
+                        </label>
+                    </div>
+
+                    <div class="option-group">
+                        <label class="option-label">
+                            <span class="label-text">Test Iterations</span>
+                            <input type="number" class="option-input" id="iterations" value="100" min="10" max="1000">
+                        </label>
+                    </div>
+
+                    <div class="option-group">
+                        <label class="option-label">
+                            <span class="label-text">Delay Between Tests (ms)</span>
+                            <input type="number" class="option-input" id="delay" value="1000" min="500" max="5000" step="100">
+                        </label>
+                    </div>
+
+                    <div class="option-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" class="option-checkbox" id="autoSave" checked>
+                            <span class="checkbox-text">Auto-save best results</span>
+                        </label>
+                    </div>
+
+                    <button class="save-btn" id="saveOptionsBtn">
+                        <svg class="btn-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+                            <polyline points="17 21 17 13 7 13 7 21"/>
+                            <polyline points="7 3 7 8 15 8"/>
+                        </svg>
+                        Save Settings
+                    </button>
+
+                    <div class="footer-info">
+                        <p class="footer-text">By Hakan Sarıaslan</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Import JavaScript separately -->
+    <script src="popup.js"></script>
+</body>
+</html>
