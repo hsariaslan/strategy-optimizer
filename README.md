@@ -4,11 +4,22 @@ A Chrome extension for automatically testing and optimizing TradingView strategy
 
 **Website:** [sariaslan.org](https://sariaslan.org)
 
-## 🚀 Version 0.1.1
+## 🚀 Version 0.1.1.1
+
+### ✨ New Features in 0.1.1.1
+- **Automatic Parameter Detection**: Extension opens strategy settings and fetches all parameters automatically
+- **Parameter Modal**: Beautiful modal interface showing all strategy parameters
+- **Real TradingView Integration**: Works directly with TradingView's strategy settings
+- **Strategy Information**: Displays strategy name and total iterations
+- **Customizable Parameters**: Adjust From, To, and Step values for each parameter
+- **Clean Architecture**: Separate HTML, CSS, and JS files (no inline code!)
 
 ## 📋 Features
 
-- **Modern UI**: Beautiful interface with 3 tabs (Test, Results, Options)
+- **Automatic Strategy Detection**: Opens TradingView strategy settings automatically
+- **Parameter Extraction**: Fetches all input parameters from your strategy
+- **Modern Modal Interface**: Clean, professional modal with separate HTML/CSS files
+- **Parameter Configuration**: Set range (From/To) and step size for each parameter
 - **Multiple Optimization Goals**: 
   - Maximum Profit
   - Best Win Rate
@@ -17,23 +28,26 @@ A Chrome extension for automatically testing and optimizing TradingView strategy
   - Test iterations (default: 10)
   - Delay between tests (500-5000ms)
   - Auto-save best results
-- **Clean Architecture**: Separate HTML, CSS, and JavaScript files
 
 ## 📁 Folder Structure
 
 ```
 tradingview-optimizer/
-├── manifest.json          # Extension configuration
+├── manifest.json              # Extension configuration
 ├── popup/
-│   ├── popup.html        # Main popup interface
-│   ├── popup.css         # Popup styles
-│   └── popup.js          # Popup logic
+│   ├── popup.html            # Popup interface
+│   ├── popup.css             # Popup styles
+│   └── popup.js              # Popup logic
 ├── content/
-│   └── content.js        # TradingView page interaction
+│   ├── tv-helper.js          # TradingView DOM helper
+│   ├── content.js            # Main content script
+│   └── modal/
+│       ├── modal.html        # Modal HTML templates
+│       └── modal.css         # Modal styles (separate!)
 ├── background/
-│   └── background.js     # Background service worker
+│   └── background.js         # Background service worker
 └── icons/
-    ├── icon16.png        # Extension icons
+    ├── icon16.png            # Extension icons
     ├── icon48.png
     └── icon128.png
 ```
@@ -61,38 +75,113 @@ tradingview-optimizer/
 
 ## 📖 How to Use
 
-1. Open [TradingView.com](https://www.tradingview.com)
-2. Open a chart with a strategy already applied
-3. Click the extension icon in your Chrome toolbar
-4. Configure your optimization settings in the **Options** tab
-5. Click **Save Settings**
-6. Go to the **Test** tab and click **Optimize Strategy**
+### Step 1: Open TradingView with a Strategy
+1. Go to [TradingView.com](https://www.tradingview.com)
+2. Open a chart
+3. Apply a strategy to your chart (it must have input parameters)
 
-## 🎨 Design Features
+### Step 2: Configure Extension Settings (Optional)
+1. Click the extension icon in your Chrome toolbar
+2. Go to the **Options** tab
+3. Set your preferences:
+   - **Optimization Goal**: Choose between Max Profit, Best Win Rate, or Balanced
+   - **Test Iterations**: Number of parameter combinations to test
+   - **Delay Between Tests**: Time to wait between each test
+4. Click **Save Settings**
 
-- **Modern Gradient Design**: Beautiful purple gradient theme
-- **Intuitive Tab Navigation**: Easy switching between tabs
-- **Icon-Based UI**: Every button and tab has a relevant icon
-- **Responsive Layout**: Clean, organized 400px width popup
+### Step 3: Start Optimization
+1. Make sure you're on a TradingView chart with a strategy applied
+2. Click the extension icon
+3. Click **Optimize Strategy** button
+4. The extension will:
+   - Automatically open your strategy settings
+   - Extract all input parameters
+   - Show them in a modal dialog
+
+### Step 4: Configure Parameters
+1. Review the detected parameters in the modal
+2. For each parameter:
+   - Check/uncheck to include/exclude it from optimization
+   - Set **From** value (minimum to test)
+   - Set **To** value (maximum to test)
+   - Set **Step** size (increment between tests)
+3. Click **Start Optimization** (implementation coming in next version)
+
+## 🎨 How It Works
+
+1. **Click "Optimize Strategy"** → Extension sends message to content script
+2. **Content Script Actions**:
+   - Loads modal HTML and CSS from separate files
+   - Finds and clicks strategy settings button
+   - Waits for settings dialog to open
+   - Navigates to "Inputs" tab
+   - Extracts all parameter information (name, current value, min, max, step)
+   - Closes the settings dialog
+3. **Modal Display**:
+   - Shows strategy name
+   - Lists all parameters in a table
+   - Allows customization of test ranges
+   - Displays total iterations count
+
+## 🏗️ Architecture Highlights
+
+### Clean Code Structure
+- ✅ **No inline HTML** in JavaScript files
+- ✅ **No inline CSS** in JavaScript files
+- ✅ **Separate template files** for modal HTML
+- ✅ **Separate stylesheet** for modal CSS
+- ✅ **Dynamic loading** using fetch() and chrome.runtime.getURL()
+
+### File Organization
+```
+Modal System:
+├── modal.html    → HTML templates (loading, parameters, error)
+├── modal.css     → All modal styles
+└── content.js    → Loads templates and manages logic
+```
 
 ## 🔄 Development Status
 
-**Current Version**: 0.1.1 - Foundation with UI complete
+**Version 0.1.1.1 - Parameter Detection Complete**
 
-**Next Steps**:
-1. TradingView Integration - DOM interaction with strategy panel
-2. Parameter Detection - Automatically detect strategy parameters
-3. Optimization Algorithm - Implement parameter testing logic
-4. Results Display - Show optimization results with statistics
+✅ Completed:
+- Extension structure and UI
+- TradingView DOM interaction
+- Strategy settings automation
+- Parameter extraction
+- Modal interface with separate HTML/CSS
+- Parameter configuration UI
+- Improved selector reliability
 
-## 💡 Code Structure
+⏳ Coming Next (v0.1.3+):
+- Actual parameter testing logic
+- Progress tracking during optimization
+- Results collection and storage
+- Best parameters identification
+- Results display in Results tab
+- Export functionality
 
-1. **manifest.json** - Extension configuration with permissions
-2. **popup/popup.html** - Clean HTML structure (no embedded JS)
-3. **popup/popup.css** - Modern CSS with animations
-4. **popup/popup.js** - User interaction logic
-5. **content/content.js** - TradingView page interaction
-6. **background/background.js** - Background tasks and data storage
+## 💡 Technical Details
+
+### TradingView Integration
+- Uses multiple fallback selectors to find strategy elements
+- Waits for dialogs to fully load
+- Extracts parameters dynamically
+- Works with TradingView's dynamic UI
+- Handles UI changes gracefully
+
+### Parameter Detection
+- Finds input fields in strategy settings
+- Extracts names, values, ranges, and steps
+- Handles various parameter types
+- Falls back to alternative detection methods
+
+### Modal System
+- Templates loaded via fetch()
+- CSS injected once on initialization
+- Clean separation of concerns
+- Uses HTML template elements
+- Dynamic content insertion
 
 ## 🛠️ Development Tips
 
@@ -104,11 +193,26 @@ tradingview-optimizer/
 **Debugging**:
 - **Popup**: Right-click extension icon → Inspect popup
 - **Content Script**: F12 on TradingView page → Console tab
-- **Background**: Extension details → Service Worker → Inspect
+- Check console for "TradingView Strategy Optimizer" messages
+- Look for "Modal templates loaded successfully"
+
+**Common Issues**:
+- If no parameters found, ensure strategy has input parameters
+- If dialog not found, try different selectors in tv-helper.js
+- Refresh the page if content script doesn't load
+- Check that modal files are in web_accessible_resources
+
+## ⚠️ Important Notes
+
+- Make sure your strategy has input parameters
+- The extension works only on TradingView chart pages
+- Each time you click "Optimize Strategy", parameters are fetched fresh
+- Switching strategies and clicking again will fetch the new strategy's parameters
+- All HTML and CSS are in separate files for clean architecture
 
 ## 📝 License
 
-Created by [Hakan Sarıaslan](https://sariaslan.org) - Version 0.1.1
+Created by [Hakan Sarıaslan](https://sariaslan.org) - Version 0.1.1.1
 
 ## 📞 Support
 
@@ -116,4 +220,4 @@ For questions or issues, visit [sariaslan.org](https://sariaslan.org)
 
 ---
 
-**Status**: UI Complete - Ready for TradingView integration
+**Version 0.1.1.1**: Parameter detection with clean architecture. HTML and CSS properly separated from JavaScript!

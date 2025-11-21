@@ -1,0 +1,77 @@
+<!-- TradingView Strategy Optimizer - Modal Templates -->
+
+<!-- Loading Modal Template -->
+<template id="loading-modal-template">
+    <div id="tv-optimizer-modal" class="tv-optimizer-modal">
+        <div class="tv-optimizer-modal-content loading">
+            <div class="loading-spinner"></div>
+            <h3>Loading Strategy Parameters...</h3>
+            <p>Please wait while we fetch the parameters from your strategy.</p>
+        </div>
+    </div>
+</template>
+
+<!-- Parameters Modal Template -->
+<template id="parameters-modal-template">
+    <div id="tv-optimizer-modal" class="tv-optimizer-modal">
+        <div class="tv-optimizer-modal-content">
+            <div class="modal-header">
+                <h2>Strategy Parameters</h2>
+                <button class="close-btn" id="close-modal">&times;</button>
+            </div>
+            
+            <div class="modal-body">
+                <div class="strategy-info">
+                    <span class="strategy-label">Strategy:</span>
+                    <span class="strategy-name" id="strategy-name-display"></span>
+                    <span class="iterations-info">Total iterations: <strong id="total-iterations-display"></strong></span>
+                </div>
+                
+                <div class="parameters-section">
+                    <div class="saved-params">
+                        <span class="saved-label" id="active-params-label"></span>
+                        <span class="param-names" id="param-names-display"></span>
+                    </div>
+                    
+                    <table class="params-table">
+                        <thead>
+                            <tr>
+                                <th class="col-active">Active</th>
+                                <th class="col-parameter">Parameter</th>
+                                <th class="col-value">From</th>
+                                <th class="col-value">To</th>
+                                <th class="col-value">Step</th>
+                                <th class="col-value">Default</th>
+                            </tr>
+                        </thead>
+                        <tbody id="parameters-tbody">
+                            <!-- Parameters will be inserted here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <button class="btn-secondary" id="cancel-btn">Cancel</button>
+                <button class="btn-primary" id="start-optimization-btn">
+                    <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+                    </svg>
+                    Start Optimization
+                </button>
+            </div>
+        </div>
+    </div>
+</template>
+
+<!-- Error Modal Template -->
+<template id="error-modal-template">
+    <div id="tv-optimizer-modal" class="tv-optimizer-modal">
+        <div class="tv-optimizer-modal-content error">
+            <div class="error-icon">⚠️</div>
+            <h3>Error</h3>
+            <p class="error-message" id="error-message-display"></p>
+            <button class="btn-primary" id="close-error-btn">Close</button>
+        </div>
+    </div>
+</template>

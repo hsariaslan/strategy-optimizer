@@ -49,8 +49,30 @@ function initializeButtons() {
 
 // Handle optimization start
 async function handleOptimize() {
-    // TODO: Will implement modal and TradingView integration later
-    console.log('Optimize button clicked - functionality to be implemented');
+    try {
+        // Check if we're on TradingView
+        const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+        
+        if (!tab.url || !tab.url.includes('tradingview.com')) {
+            showNotification('Please navigate to TradingView first', 'error');
+            return;
+        }
+
+        // Get options
+        const options = await getOptions();
+
+        // Send message to content script
+        await chrome.tabs.sendMessage(tab.id, { 
+            action: 'startOptimization',
+            options: options
+        });
+
+        showNotification('Opening strategy parameters...', 'info');
+
+    } catch (error) {
+        console.error('Optimization error:', error);
+        showNotification(error.message || 'Failed to start optimization', 'error');
+    }
 }
 
 // Handle export
